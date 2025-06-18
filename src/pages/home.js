@@ -4,7 +4,7 @@ import Dashboard from './dashboard';
 import Profile from './profile';
 
 export default function Home({ user, setUser }) {
-  const [activeTab, setActiveTab] = useState('profile');
+  const [activeTab, setActiveTab] = useState('products');
 
   return (
     <div style={{ maxWidth: 900, margin: '0 auto', padding: 20 }}>
@@ -42,7 +42,9 @@ export default function Home({ user, setUser }) {
       {activeTab === 'profile' && (
         <Profile user={user} onUserUpdated={setUser} />
       )}
-      {activeTab === 'products' && <Dashboard />}
+      {activeTab === 'products' && (
+        <Dashboard goBackToTab={() => setActiveTab('products')} />
+      )}
     </div>
   );
 }

@@ -8,14 +8,25 @@ export default function ExportCSVButton({ selectedRows }) {
       return;
     }
 
-    const header = 'Product ID,Name,Brand,Item IDs';
-    const rows = selectedRows.map(p =>
-      `${p.productId},${p.productName},${p.brand},"${p.items.map(i => i.itemId).join(' | ')}"`
-    );
+    const header = ['Id Producto', 'Nombre', 'Marca', 'Items'];
 
-    const blob = new Blob([header + '\n' + rows.join('\n')], {
-      type: 'text/csv;charset=utf-8;'
+    const escapeCSV = (value) => {
+      const str = String(value).replace(/"/g, '""');
+      return `"${str}"`;
+    };
+
+    const rows = selectedRows.map(p => {
+      const itemIds = p.items.map(i => i.itemId).join(', ');
+      return [
+        p.productId,
+        escapeCSV(p.productName),
+        escapeCSV(p.brand),
+        escapeCSV(itemIds)
+      ].join(';');
     });
+
+    const csvContent = [header.join(';'), ...rows].join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
 
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

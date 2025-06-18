@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { graphqlRequest } from '../utils/api';
 import {
   Box,
   Typography,
   CircularProgress,
-  Card,
   CardContent,
   CardMedia,
   Button,
@@ -33,6 +32,7 @@ const PRODUCTS_QUERY = `
 
 export default function ProductDetail() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem('token');
@@ -55,17 +55,21 @@ export default function ProductDetail() {
     fetchData();
   }, [id, token]);
 
-  if (loading) return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
-      <CircularProgress />
-    </Box>
-  );
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 5 }}>
+        <CircularProgress />
+      </Box>
+    );
+  }
 
-  if (!product) return (
-    <Typography variant="h6" color="error" textAlign="center" mt={5}>
-      Producto no encontrado.
-    </Typography>
-  );
+  if (!product) {
+    return (
+      <Typography variant="h6" color="error" textAlign="center" mt={5}>
+        Producto no encontrado.
+      </Typography>
+    );
+  }
 
   return (
     <Box sx={{ px: { xs: 2, md: 8 }, py: 4 }}>
@@ -114,7 +118,19 @@ export default function ProductDetail() {
           </Grid>
         </Grid>
 
-        <Box mt={4} textAlign="right">
+        <Box mt={4} display="flex" justifyContent="space-between">
+          <Button
+            variant="outlined"
+            onClick={() => navigate(-1)}
+            sx={{
+              textTransform: 'none',
+              px: 4,
+              py: 1.2
+            }}
+          >
+            Volver
+          </Button>
+
           <Button
             variant="contained"
             color="warning"
