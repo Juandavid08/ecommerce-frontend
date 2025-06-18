@@ -1,5 +1,12 @@
 import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Paper } from '@mui/material';
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Paper,
+  CircularProgress
+} from '@mui/material';
 import { graphqlRequest } from '../utils/api';
 
 const LOGIN_QUERY = `
@@ -19,6 +26,7 @@ const LOGIN_QUERY = `
 export default function LoginForm({ onLogin }) {
   const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false); // 👈 Estado de carga
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -27,6 +35,7 @@ export default function LoginForm({ onLogin }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true); // 👈 Inicia el loader
 
     try {
       const res = await graphqlRequest(LOGIN_QUERY, form);
@@ -50,6 +59,8 @@ export default function LoginForm({ onLogin }) {
     } catch (err) {
       console.error('Error en login:', err);
       setError('Error inesperado durante el login');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -91,21 +102,29 @@ export default function LoginForm({ onLogin }) {
           sx={{ mb: 2 }}
         />
 
-        <Button
-          type="submit"
-          fullWidth
-          variant="contained"
-          sx={{
-            backgroundColor: '#ffdb00',
-            color: '#000',
-            fontWeight: 'bold',
-            '&:hover': {
-              backgroundColor: '#e6c900'
-            }
-          }}
-        >
-          Entrar
-        </Button>
+        <Box sx={{ mt: 2, mb: 2 }}>
+          {loading ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+              <CircularProgress color="warning" />
+            </Box>
+          ) : (
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              sx={{
+                backgroundColor: '#ffdb00',
+                color: '#000',
+                fontWeight: 'bold',
+                '&:hover': {
+                  backgroundColor: '#e6c900'
+                }
+              }}
+            >
+              Entrar
+            </Button>
+          )}
+        </Box>
 
         {error && (
           <Typography color="error" sx={{ mt: 2 }}>

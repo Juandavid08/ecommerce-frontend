@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { graphqlRequest } from './utils/api';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import ProductDetail from './pages/productDetail';
 import Dashboard from './pages/dashboard';
 import LoginForm from './components/loginForm';
